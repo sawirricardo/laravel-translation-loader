@@ -103,8 +103,7 @@ class TranslationLoader
             "([.][^\1)$]+)+". // Be followed by one or more items/keys
             ')'. // Close group
             "[\'\"]". // Closing quote
-            "[\),]"  // Close parentheses or new parameter
-;
+            "[\),]";  // Close parentheses or new parameter
 
         $patternB =
             // See https://regex101.com/r/2EfItR/2
@@ -120,8 +119,7 @@ class TranslationLoader
             ')'. // Close group
             '[\"]'. // Closing quote
 
-            '[\)]'  // Close parentheses or new parameter
-;
+            '[\)]';  // Close parentheses or new parameter
 
         $patternC =
             // See https://regex101.com/r/VaPQ7A/2
@@ -137,8 +135,7 @@ class TranslationLoader
             ')'. // Close group
             '[\']'. // Closing quote
 
-            '[\)]'  // Close parentheses or new parameter
-;
+            '[\)]';  // Close parentheses or new parameter
 
         $trans = collect();
         $__ = collect();

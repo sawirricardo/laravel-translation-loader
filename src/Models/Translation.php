@@ -26,17 +26,17 @@ class Translation extends Model
     {
         return cache()->rememberForever(static::getCacheKey($group, $locale), function () use ($group, $locale) {
             return static::query()
-                    ->where('group', $group)
-                    ->get()
-                    ->reduce(function ($lines, self $languageLine) use ($locale) {
-                        $translation = $languageLine->getTranslation($this->getTranslatableAttributes()[0], $locale);
+                ->where('group', $group)
+                ->get()
+                ->reduce(function ($lines, self $languageLine) use ($locale) {
+                    $translation = $languageLine->getTranslation($this->getTranslatableAttributes()[0], $locale);
 
-                        if (! is_null($translation)) {
-                            data_set($lines, $languageLine->key, $translation);
-                        }
+                    if (! is_null($translation)) {
+                        data_set($lines, $languageLine->key, $translation);
+                    }
 
-                        return $lines;
-                    }) ?? [];
+                    return $lines;
+                }) ?? [];
         });
     }
 
