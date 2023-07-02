@@ -4,7 +4,7 @@ namespace Sawirricardo\LaravelTranslationLoader;
 
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Translation\Translator;
-use Sawirricardo\LaravelTranslationLoader\Commands\ScanTranslationsCommand;
+use Sawirricardo\LaravelTranslationLoader\Commands\SyncTranslationsCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -16,7 +16,7 @@ class LaravelTranslationLoaderServiceProvider extends PackageServiceProvider imp
             ->name('laravel-translation-loader')
             ->hasConfigFile()
             ->hasMigration('create_translations_table')
-            ->hasCommand(ScanTranslationsCommand::class);
+            ->hasCommand(SyncTranslationsCommand::class);
     }
 
     public function provides()
