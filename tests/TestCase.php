@@ -2,19 +2,17 @@
 
 namespace Sawirricardo\LaravelTranslationLoader\Tests;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Sawirricardo\LaravelTranslationLoader\LaravelTranslationLoaderServiceProvider;
 
 class TestCase extends Orchestra
 {
+    protected $translation;
+
     protected function setUp(): void
     {
         parent::setUp();
-
-        Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Sawirricardo\\LaravelTranslationLoader\\Database\\Factories\\'.class_basename($modelName).'Factory'
-        );
+        $this->translation = createTrans('group', 'key', ['en' => 'english', 'nl' => 'nederlands']);
     }
 
     protected function getPackageProviders($app)
@@ -26,11 +24,15 @@ class TestCase extends Orchestra
 
     public function getEnvironmentSetUp($app)
     {
-        config()->set('database.default', 'testing');
+        $app['path.lang'] = __DIR__.'/fixtures/lang';
+        config()->set('database.default', 'sqlite');
+        config()->set('database.connections.sqlite', [
+            'driver' => 'sqlite',
+            'database' => ':memory:',
+            'prefix' => '',
+        ]);
 
-        /*
-        $migration = include __DIR__.'/../database/migrations/create_laravel-translation-loader_table.php.stub';
+        $migration = include __DIR__.'/../database/migrations/create_translations_table.php.stub';
         $migration->up();
-        */
     }
 }
