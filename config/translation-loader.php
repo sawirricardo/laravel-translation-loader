@@ -7,6 +7,8 @@ return [
 
     'model' => \Sawirricardo\LaravelTranslationLoader\Models\Translation::class,
 
+    'translation_manager' => \Sawirricardo\LaravelTranslationLoader\TranslationLoaderManager::class,
+
     'locals' => [
         'en' => 'English',
         'ar' => 'Arabic',
