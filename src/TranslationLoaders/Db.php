@@ -2,7 +2,7 @@
 
 namespace Sawirricardo\LaravelTranslationLoader\TranslationLoaders;
 
-class Db
+class Db implements TranslationLoader
 {
     public function loadTranslations($locale, $group)
     {
