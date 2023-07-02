@@ -28,11 +28,19 @@ class Translation extends Model
             return static::query()
                 ->where('group', $group)
                 ->get()
-                ->reduce(function ($lines, self $languageLine) use ($locale) {
-                    $translation = $languageLine->getTranslation($this->getTranslatableAttributes()[0], $locale);
+                ->reduce(function ($lines, self $model) use ($group, $locale) {
+                    $translatableAttribute = $model->getTranslatableAttributes()[0];
+                    $translation = $model->getTranslation($translatableAttribute, $locale);
 
-                    if (! is_null($translation)) {
-                        data_set($lines, $languageLine->key, $translation);
+                    if (is_null(data_get(json_decode($model->getAttributeFromArray($translatableAttribute), true), $locale))) {
+                        $translation = null;
+                    }
+                    if (! is_null($translation) && $group === '*') {
+                        // Make a flat array when returning json translations
+                        $lines[$model->key] = $translation;
+                    } elseif (! is_null($translation) && $group !== '*') {
+                        // Make a nested array when returning normal translations
+                        data_set($lines, $model->key, $translation);
                     }
 
                     return $lines;
@@ -42,7 +50,7 @@ class Translation extends Model
 
     public static function getTranslatableLocales(): array
     {
-        return config('filament-translations.locals');
+        return config('translation-loader.locals');
     }
 
     public static function getCacheKey($group, $locale)
