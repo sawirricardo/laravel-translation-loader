@@ -30,7 +30,7 @@ it('can translate using dummy manager using file with incomplete db', function (
 
 it('can translate using dummy manager using empty translation in db', function () {
     createTrans('file', 'key', ['en' => '']);
-    
+
     // Some versions of Laravel changed the behaviour of what an empty "" translation value returns: the key name or an empty value
     // @see https://github.com/laravel/framework/issues/34218
     assertTrue(in_array(trans('file.key'), ['', 'file.key']));
