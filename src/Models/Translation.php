@@ -30,17 +30,20 @@ class Translation extends Model
                 ->get()
                 ->reduce(function ($lines, self $model) use ($group, $locale) {
                     $translatableAttribute = $model->getTranslatableAttributes()[0];
-                    $translation = $model->getTranslation($translatableAttribute, $locale);
 
-                    if (is_null(data_get(json_decode($model->getAttributeFromArray($translatableAttribute), true), $locale))) {
-                        $translation = null;
-                    }
-                    if (! is_null($translation) && $group === '*') {
-                        // Make a flat array when returning json translations
-                        $lines[$model->key] = $translation;
-                    } elseif (! is_null($translation) && $group !== '*') {
-                        // Make a nested array when returning normal translations
-                        data_set($lines, $model->key, $translation);
+                    $locale = $model->normalizeLocale($translatableAttribute, $locale, true);
+
+                    $transText = json_decode($model->getAttributeFromArray($translatableAttribute) ?? '{}', true);
+
+                    if (array_key_exists($locale, $transText)) {
+                        $translation = $model->getTranslation($translatableAttribute, $locale);
+                        if ($group === '*') {
+                            // Make a flat array when returning json translations
+                            $lines[$model->key] = $translation;
+                        } else {
+                            // Make a nested array when returning normal translations
+                            data_set($lines, $model->key, $translation);
+                        }
                     }
 
                     return $lines;
