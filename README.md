@@ -46,36 +46,67 @@ This is the contents of the published config file:
 
 ```php
 'translation_loaders' => [
-        \Sawirricardo\LaravelTranslationLoader\TranslationLoaders\Db::class,
-    ],
+    \Sawirricardo\LaravelTranslationLoader\TranslationLoaders\Db::class,
+],
 
-    'model' => \Sawirricardo\LaravelTranslationLoader\Models\Translation::class,
+'model' => \Sawirricardo\LaravelTranslationLoader\Models\Translation::class,
 
-    'locals' => [
-        'en' => 'English',
-        'ar' => 'Arabic',
-        'pt_BR' => 'Português (Brasil)',
-        'my' => 'Burmese',
-        'id' => 'Bahasa Indonesia',
-    ],
+'translation_manager' => \Sawirricardo\LaravelTranslationLoader\TranslationLoaderManager::class,
 
-    'paths' => [
-        app_path(),
-        resource_path('views'),
-        base_path('vendor'),
-    ],
+'locals' => [
+    'en' => 'English',
+    'ar' => 'Arabic',
+    'pt_BR' => 'Português (Brasil)',
+    'my' => 'Burmese',
+    'id' => 'Bahasa Indonesia',
+],
 
-    'excluded_paths' => [
-        //
-    ],
+'paths' => [
+    app_path(),
+    resource_path('views'),
+    base_path('vendor'),
+],
+
+'excluded_paths' => [
+    //
+],
 ```
 
 ## Usage
 
 ```php
-$laravelTranslationLoader = new Sawirricardo\LaravelTranslationLoader();
-echo $laravelTranslationLoader->echoPhrase('Hello, Sawirricardo!');
+use Sawirricardo\LaravelTranslationLoader\Models\Translation;
+
+Translation::create([
+   'group' => 'validation',
+   'key' => 'required',
+   'text' => ['en' => 'This is a required field', 'nl' => 'Dit is een verplicht veld'],
+]);
 ```
+
+You can fetch the translation with [Laravel's default trans function](https://laravel.com/docs/5.3/localization#retrieving-language-lines):
+
+```php
+trans('validation.required'); // returns 'This is a required field'
+
+app()->setLocale('nl');
+
+trans('validation.required'); // returns 'Dit is een verplicht veld'
+```
+
+## Creating your own translation providers
+
+This package ships with a translation provider than can fetch translations from the database. If you're storing your translations in a yaml-file, a csv-file, or ... you can easily extend this package by creating your own translation provider.
+
+A translation provider can be any class that implements the `Sawirricardo\LaravelTranslationLoader\TranslationLoaders\TranslationLoader`-interface. It contains only one method:
+
+namespace Sawirricardo\LaravelTranslationLoader\TranslationLoaders;
+
+interface TranslationLoader
+{
+public function loadTranslations($locale, $group);
+}
+Translation providers can be registered in the translation_loaders key of the config file.
 
 ## Testing
 
